@@ -157,7 +157,7 @@ export default function Home() {
     <>
       {/* Mobile sidebar toggle */}
       <button 
-        className="fixed top-4 left-4 md:hidden z-20 p-2 bg-primary text-white rounded-md"
+        className="fixed top-4 left-4 md:hidden z-30 p-2 bg-primary text-white rounded-md"
         onClick={toggleSidebar}
       >
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -168,7 +168,7 @@ export default function Home() {
       </button>
       
       {/* Sidebar */}
-      <div className={`md:relative fixed inset-y-0 left-0 z-10 transform transition-transform duration-300 ease-in-out ${
+      <div className={`md:relative fixed inset-y-0 left-0 z-20 transform transition-transform duration-300 ease-in-out ${
         isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
       } md:translate-x-0`}>
         <Sidebar 
@@ -182,7 +182,7 @@ export default function Home() {
       
       {/* Chat area */}
       <div className="flex-1 flex flex-col h-screen overflow-hidden">
-        <header className="bg-white border-b p-4 flex items-center">
+        <header className="bg-white border-b p-4 md:p-4 pl-16 md:pl-4 flex items-center z-10 relative">
           <h1 className="text-xl font-bold text-primary">MentorAI</h1>
           <p className="text-gray-600 ml-4">Your AI-powered educational assistant</p>
         </header>
@@ -239,7 +239,7 @@ export default function Home() {
       {/* Overlay for mobile */}
       {isSidebarOpen && (
         <div 
-          className="md:hidden fixed inset-0 bg-black bg-opacity-50 z-0"
+          className="md:hidden fixed inset-0 bg-black bg-opacity-50 z-10"
           onClick={() => setIsSidebarOpen(false)}
         ></div>
       )}

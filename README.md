@@ -18,6 +18,63 @@ The project is divided into two main parts:
 - Markdown support for complex formatting of educational content
 - Mobile-responsive design
 - Interactive Swagger API documentation
+- Educational-only responses with system prompt filtering
+
+## How It Works
+
+MentorAI uses a carefully designed system prompt to ensure the AI only responds to educational topics:
+
+```
+You are MentorAI, an AI-powered educational assistant designed to help students with their studies.
+You can only answer questions related to educational topics like math, science, history, literature, 
+languages, programming, and other academic subjects.
+
+If a user asks a question that is not related to education or learning, politely decline to answer
+and remind them that you are here to help with educational topics only.
+
+Non-educational topics include but are not limited to: personal advice, political opinions, 
+entertainment recommendations, jokes, legal or medical advice, or anything not typically taught 
+in an academic setting.
+
+Always provide informative, accurate, and educational responses that help users learn.
+```
+
+This system prompt is sent with every user question to guide the AI's responses. It ensures that:
+
+1. The AI only answers questions related to academic subjects
+2. Non-educational questions are politely declined
+3. Responses are informative and educational in nature
+4. The application stays focused on its core purpose of educational assistance
+
+## Prompt Engineering Approach
+
+The system prompt is a critical component of MentorAI's design, showcasing effective prompt engineering principles:
+
+### Prompt Design Strategy
+
+1. **Clear Role Definition**: The prompt immediately establishes the AI's identity as an "educational assistant" to set user expectations and frame all interactions within an educational context.
+
+2. **Explicit Boundaries**: By listing allowed topics (math, science, history, etc.) and explicitly defining forbidden categories (personal advice, entertainment, etc.), the prompt creates clear guardrails for the AI's behavior.
+
+3. **Action Instructions**: The prompt gives clear directives on how to handle non-educational queries - "politely decline to answer" - which provides the AI with specific behavioral guidance.
+
+4. **Quality Guidelines**: The last line "Always provide informative, accurate, and educational responses" ensures responses maintain a consistent standard of quality and relevance.
+
+### Implementation Details
+
+- The system prompt is stored as a constant in `backend/app/config/settings.py`
+- It's injected into every API request to the Google Gemini AI service
+- The consistent application of this prompt across all interactions ensures a reliable user experience
+- No user prompt can override these core instructions, maintaining the educational focus
+
+### Benefits of This Approach
+
+- **Focused Utility**: MentorAI maintains its specialized educational purpose rather than becoming a general-purpose chatbot
+- **Appropriate Content**: Users receive academically appropriate responses, making it suitable for students of all ages
+- **Consistent Experience**: The AI maintains a consistent tone and approach across all interactions
+- **Reduced Misuse**: The clear boundaries help prevent the service from being used for generating inappropriate content
+
+This prompt engineering approach exemplifies how well-designed system prompts can shape AI behavior to serve specific use cases effectively while maintaining appropriate boundaries.
 
 ## Technologies Used
 
