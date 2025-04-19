@@ -14,7 +14,10 @@ API_DESCRIPTION = "Backend for the EduBuddy educational assistant"
 API_VERSION = "1.0.0"
 
 # CORS settings
-CORS_ORIGINS = ["http://localhost:3000"]  # Frontend URL
+CORS_ORIGINS = [
+    "http://localhost:3000",  # Development URL
+    "https://edu-buddy-liart.vercel.app"  # Production URL
+]
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_METHODS = ["*"]
 CORS_ALLOW_HEADERS = ["*"]
