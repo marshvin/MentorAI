@@ -5,6 +5,7 @@ import { BeatLoader } from 'react-spinners';
 import ChatMessage from '@/components/ChatMessage';
 import ChatInput from '@/components/ChatInput';
 import Sidebar from '@/components/Sidebar';
+import ConfirmDialog from '@/components/ConfirmDialog';
 import { educationApi } from '@/api';
 import { 
   Conversation, 
@@ -21,6 +22,8 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [conversationToDelete, setConversationToDelete] = useState<string | null>(null);
 
   // Load conversations from localStorage on initial load
   useEffect(() => {
@@ -132,6 +135,24 @@ export default function Home() {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
+  const handleDeleteClick = (id: string) => {
+    setConversationToDelete(id);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleConfirmDelete = () => {
+    if (conversationToDelete) {
+      handleDeleteConversation(conversationToDelete);
+      setDeleteDialogOpen(false);
+      setConversationToDelete(null);
+    }
+  };
+
+  const handleCancelDelete = () => {
+    setDeleteDialogOpen(false);
+    setConversationToDelete(null);
+  };
+
   return (
     <>
       {/* Mobile sidebar toggle */}
@@ -154,7 +175,7 @@ export default function Home() {
           conversations={conversations}
           activeConversationId={activeConversation?.id || null}
           onSelectConversation={handleSelectConversation}
-          onDeleteConversation={handleDeleteConversation}
+          onDeleteClick={handleDeleteClick}
           onNewChat={handleNewChat}
         />
       </div>
@@ -222,6 +243,17 @@ export default function Home() {
           onClick={() => setIsSidebarOpen(false)}
         ></div>
       )}
+
+      {/* Confirmation Dialog */}
+      <ConfirmDialog
+        isOpen={deleteDialogOpen}
+        title="Delete Conversation"
+        message="Are you sure you want to delete this conversation? This action cannot be undone."
+        confirmLabel="Delete"
+        cancelLabel="Cancel"
+        onConfirm={handleConfirmDelete}
+        onCancel={handleCancelDelete}
+      />
     </>
   );
 } 

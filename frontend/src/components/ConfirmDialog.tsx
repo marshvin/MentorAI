@@ -48,32 +48,44 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div 
-        ref={dialogRef}
-        className="bg-white rounded-lg shadow-xl w-full max-w-md p-6 dark:bg-gray-800 transform transition-all"
-      >
-        <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
-          {title}
-        </h3>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
-          {message}
-        </p>
-        <div className="flex justify-end space-x-3">
-          <button
-            type="button"
-            onClick={onCancel}
-            className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300"
-          >
-            {cancelLabel}
-          </button>
-          <button
-            type="button"
-            onClick={onConfirm}
-            className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-          >
-            {confirmLabel}
-          </button>
+    <div className="fixed inset-0 z-[100] overflow-y-auto">
+      <div className="flex min-h-screen items-center justify-center p-4 text-center">
+        {/* Overlay */}
+        <div className="fixed inset-0 bg-black bg-opacity-50 transition-opacity" />
+        
+        {/* Dialog */}
+        <div 
+          ref={dialogRef}
+          className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6"
+        >
+          <div className="sm:flex sm:items-start">
+            <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left w-full">
+              <h3 className="text-lg font-medium leading-6 text-gray-900">
+                {title}
+              </h3>
+              <div className="mt-2">
+                <p className="text-sm text-gray-500">
+                  {message}
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse gap-3">
+            <button
+              type="button"
+              onClick={onConfirm}
+              className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:w-auto"
+            >
+              {confirmLabel}
+            </button>
+            <button
+              type="button"
+              onClick={onCancel}
+              className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
+            >
+              {cancelLabel}
+            </button>
+          </div>
         </div>
       </div>
     </div>

@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import ConfirmDialog from './ConfirmDialog';
+import React from 'react';
 
 interface Conversation {
   id: string;
@@ -11,7 +10,7 @@ interface SidebarProps {
   conversations: Conversation[];
   activeConversationId: string | null;
   onSelectConversation: (id: string) => void;
-  onDeleteConversation: (id: string) => void;
+  onDeleteClick: (id: string) => void;
   onNewChat: () => void;
 }
 
@@ -19,32 +18,9 @@ const Sidebar: React.FC<SidebarProps> = ({
   conversations,
   activeConversationId,
   onSelectConversation,
-  onDeleteConversation,
+  onDeleteClick,
   onNewChat
 }) => {
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [conversationToDelete, setConversationToDelete] = useState<string | null>(null);
-
-  // Stop event propagation to prevent triggering the parent button click
-  const handleDeleteClick = (e: React.MouseEvent, id: string) => {
-    e.stopPropagation();
-    setConversationToDelete(id);
-    setDeleteDialogOpen(true);
-  };
-
-  const confirmDelete = () => {
-    if (conversationToDelete) {
-      onDeleteConversation(conversationToDelete);
-      setDeleteDialogOpen(false);
-      setConversationToDelete(null);
-    }
-  };
-
-  const cancelDelete = () => {
-    setDeleteDialogOpen(false);
-    setConversationToDelete(null);
-  };
-
   return (
     <div className="bg-gray-900 text-white h-full w-64 flex flex-col">
       <div className="p-4">
@@ -93,7 +69,10 @@ const Sidebar: React.FC<SidebarProps> = ({
                     
                     {/* Delete button - hidden by default, shown on hover or when active */}
                     <button
-                      onClick={(e) => handleDeleteClick(e, convo.id)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onDeleteClick(convo.id);
+                      }}
                       className="absolute right-2 top-2 p-1 text-gray-400 hover:text-red-500 rounded opacity-0 group-hover:opacity-100 transition-opacity"
                       title="Delete conversation"
                       aria-label="Delete conversation"
@@ -117,17 +96,6 @@ const Sidebar: React.FC<SidebarProps> = ({
           EduBuddy v1.0
         </div>
       </div>
-
-      {/* Confirmation Dialog */}
-      <ConfirmDialog
-        isOpen={deleteDialogOpen}
-        title="Delete Conversation"
-        message="Are you sure you want to delete this conversation? This action cannot be undone."
-        confirmLabel="Delete"
-        cancelLabel="Cancel"
-        onConfirm={confirmDelete}
-        onCancel={cancelDelete}
-      />
     </div>
   );
 };
