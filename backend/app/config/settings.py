@@ -16,7 +16,7 @@ API_VERSION = "1.0.0"
 # CORS settings
 CORS_ORIGINS = [
     "http://localhost:3000",  # Development URL
-    "https://edu-buddy-liart.vercel.app"  # Production URL
+    "https://mentor-ai-two.vercel.app/"  # Production URL
 ]
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_METHODS = ["*"]
