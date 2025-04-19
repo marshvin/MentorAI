@@ -13,9 +13,9 @@ router = APIRouter(
     tags=["education"],
     responses={
         status.HTTP_400_BAD_REQUEST: {"description": "Bad request"},
+        status.HTTP_422_UNPROCESSABLE_ENTITY: {"description": "Invalid input data"},
         status.HTTP_500_INTERNAL_SERVER_ERROR: {"description": "Internal server error"},
-        status.HTTP_503_SERVICE_UNAVAILABLE: {"description": "AI service unavailable"},
-        status.HTTP_422_UNPROCESSABLE_ENTITY: {"description": "Invalid input data"}
+        status.HTTP_503_SERVICE_UNAVAILABLE: {"description": "AI service unavailable"}
     }
 )
 
@@ -40,7 +40,7 @@ router = APIRouter(
             "description": "Invalid question format",
             "content": {
                 "application/json": {
-                    "example": {"detail": "Question must be phrased as a question or educational request"}
+                    "example": {"detail": "Question cannot be empty"}
                 }
             }
         },
@@ -66,14 +66,15 @@ async def ask_question(request: QuestionRequest):
     """
     Process an educational question and return an answer.
     
-    This endpoint only responds to educational topics like math, science, history, 
+    This endpoint responds to educational topics like math, science, history, 
     literature, languages, programming, and other academic subjects.
+    For non-educational topics, it provides a polite response asking for an academic question.
     
     Args:
-        request: The question request object containing the educational question
+        request: The question request object containing the question
         
     Returns:
-        AnswerResponse: The AI's response to the educational question
+        AnswerResponse: The AI's response to the question
         
     Raises:
         HTTPException: If there is an error processing the request

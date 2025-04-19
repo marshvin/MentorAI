@@ -38,12 +38,20 @@ export const educationApi = {
    */
   askQuestion: async (question: string): Promise<AnswerResponse> => {
     try {
-      // Validate input on frontend before sending to backend
+      // Basic validation - only check if empty or too long
       if (!question || question.trim().length === 0) {
         throw new ApiError(
           'Question cannot be empty', 
           400, 
-          'Please enter a valid question'
+          'Please enter a question'
+        );
+      }
+      
+      if (question.length > 1000) {
+        throw new ApiError(
+          'Question too long',
+          400,
+          'Please enter a question shorter than 1000 characters'
         );
       }
       
@@ -61,9 +69,9 @@ export const educationApi = {
         
         // Handle different error types
         if (status === 400) {
-          throw new ApiError('Invalid question format', status, detail);
+          throw new ApiError('Invalid question', status, detail);
         } else if (status === 422) {
-          throw new ApiError('Invalid input data', status, detail);
+          throw new ApiError('Invalid input format', status, detail);
         } else if (status === 503) {
           throw new ApiError('AI service unavailable', status, detail);
         } else {

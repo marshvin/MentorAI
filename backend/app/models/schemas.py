@@ -11,23 +11,17 @@ class QuestionRequest(BaseModel):
         ..., 
         description="The educational question to be answered",
         example="What is photosynthesis and how does it work?",
-        min_length=3,
-        max_length=500
+        min_length=1,
+        max_length=1000
     )
     
     @validator('question')
     def validate_question_content(cls, v):
-        # Check if question is not just whitespace
+        # Only check if the question is not just whitespace
         if v.strip() == "":
             raise ValueError("Question cannot be empty or just whitespace")
         
-        # Check if question actually ends with a question mark or is a command/request
-        if not (v.strip().endswith('?') or 'explain' in v.lower() or 'how' in v.lower() or 
-                'what' in v.lower() or 'why' in v.lower() or 'where' in v.lower() or 
-                'when' in v.lower() or 'who' in v.lower() or 'which' in v.lower() or
-                'describe' in v.lower() or 'define' in v.lower() or 'tell me' in v.lower()):
-            raise ValueError("Input should be a question or educational request")
-        
+        # No further validation on question format to allow statements like "PHOTOSYNTHESIS PROCESS"
         return v
 
 class AnswerResponse(BaseModel):
