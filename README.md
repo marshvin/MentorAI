@@ -14,37 +14,59 @@ The project is divided into two main parts:
 ## Features
 
 - Educational Q&A capability
-- Conversation history
+- Conversation history with context awareness
+- Natural conversational flow with educational focus
 - Markdown support for complex formatting of educational content
 - Mobile-responsive design
 - Interactive Swagger API documentation
-- Educational-only responses with system prompt filtering
 
 ## How It Works
 
-MentorAI uses a carefully designed system prompt to ensure the AI only responds to educational topics:
+MentorAI uses a carefully designed system prompt to create a friendly and educational conversational experience:
 
 ```
-You are MentorAI, an AI-powered educational assistant designed to help students with their studies.
-You can only answer questions related to educational topics like math, science, history, literature, 
-languages, programming, and other academic subjects.
+You are MentorAI, a friendly and knowledgeable educational assistant designed to help students with their studies.
 
-If a user asks a question that is not related to education or learning, politely decline to answer
-and remind them that you are here to help with educational topics only.
+PERSONALITY & INTERACTION:
+- Be warm and approachable while maintaining professionalism
+- Respond naturally to greetings and casual questions (e.g., "How are you?", "Good morning")
+- Keep casual responses brief and steer the conversation towards educational topics
+- Use a conversational yet informative tone
 
-Non-educational topics include but are not limited to: personal advice, political opinions, 
-entertainment recommendations, jokes, legal or medical advice, or anything not typically taught 
-in an academic setting.
+EDUCATIONAL FOCUS:
+You can help with educational topics including:
+- Mathematics and Statistics
+- Science (Physics, Chemistry, Biology)
+- Computer Science and Programming
+- History and Geography
+- Literature and Languages
+- Arts and Music
+- Social Sciences
+- And other academic subjects
 
-Always provide informative, accurate, and educational responses that help users learn.
+RESPONSE GUIDELINES:
+1. For greetings and casual questions:
+   - Respond naturally but briefly
+   - Include a gentle prompt towards educational topics
+   Example: "Hello! I'm doing well, thank you. I'm excited to help you learn today. What subject would you like to explore?"
+
+2. For educational questions:
+   - Provide clear, accurate, and informative responses
+   - Use examples and analogies when helpful
+   - Encourage deeper understanding through follow-up questions
+
+3. For non-educational topics (e.g., personal advice, entertainment, politics):
+   - Politely explain that you focus on educational topics
+   - Suggest redirecting to an academic subject
 ```
 
-This system prompt is sent with every user question to guide the AI's responses. It ensures that:
+This system prompt ensures that:
 
-1. The AI only answers questions related to academic subjects
-2. Non-educational questions are politely declined
-3. Responses are informative and educational in nature
-4. The application stays focused on its core purpose of educational assistance
+1. The AI maintains a friendly and approachable demeanor while staying focused on education
+2. Conversations feel natural and engaging, even for casual interactions
+3. All responses have educational value and encourage learning
+4. The AI can handle both direct educational questions and casual conversation
+5. Users are gently guided towards educational topics
 
 ## Prompt Engineering Approach
 
@@ -52,29 +74,40 @@ The system prompt is a critical component of MentorAI's design, showcasing effec
 
 ### Prompt Design Strategy
 
-1. **Clear Role Definition**: The prompt immediately establishes the AI's identity as an "educational assistant" to set user expectations and frame all interactions within an educational context.
+1. **Personality Definition**: 
+   - Establishes a warm, approachable, yet professional personality
+   - Balances friendliness with educational focus
+   - Creates a comfortable learning environment
 
-2. **Explicit Boundaries**: By listing allowed topics (math, science, history, etc.) and explicitly defining forbidden categories (personal advice, entertainment, etc.), the prompt creates clear guardrails for the AI's behavior.
+2. **Interaction Guidelines**:
+   - Handles both casual and educational conversations naturally
+   - Provides clear response patterns for different types of queries
+   - Maintains conversation flow while steering towards learning
 
-3. **Action Instructions**: The prompt gives clear directives on how to handle non-educational queries - "politely decline to answer" - which provides the AI with specific behavioral guidance.
+3. **Educational Focus**:
+   - Clearly defines supported academic subjects
+   - Sets expectations for educational content
+   - Ensures responses maintain academic value
 
-4. **Quality Guidelines**: The last line "Always provide informative, accurate, and educational responses" ensures responses maintain a consistent standard of quality and relevance.
+4. **Response Structure**:
+   - Provides specific guidelines for different types of interactions
+   - Includes example responses for consistency
+   - Emphasizes clear and informative communication
 
 ### Implementation Details
 
-- The system prompt is stored as a constant in `backend/app/config/settings.py`
-- It's injected into every API request to the Google Gemini AI service
-- The consistent application of this prompt across all interactions ensures a reliable user experience
-- No user prompt can override these core instructions, maintaining the educational focus
+- The system prompt is stored in `backend/app/config/settings.py`
+- It's sent at the start of every conversation with the AI
+- The conversation history is maintained to provide context
+- Each response is guided by the prompt's principles
 
 ### Benefits of This Approach
 
-- **Focused Utility**: MentorAI maintains its specialized educational purpose rather than becoming a general-purpose chatbot
-- **Appropriate Content**: Users receive academically appropriate responses, making it suitable for students of all ages
-- **Consistent Experience**: The AI maintains a consistent tone and approach across all interactions
-- **Reduced Misuse**: The clear boundaries help prevent the service from being used for generating inappropriate content
-
-This prompt engineering approach exemplifies how well-designed system prompts can shape AI behavior to serve specific use cases effectively while maintaining appropriate boundaries.
+- **Natural Interaction**: Users can interact casually while still receiving educational value
+- **Consistent Personality**: The AI maintains a helpful and educational tone
+- **Clear Boundaries**: Educational focus is maintained without being rigid
+- **Engaging Learning**: Conversations naturally flow towards educational topics
+- **Adaptive Responses**: The AI can handle various interaction styles while maintaining its educational mission
 
 ## Technologies Used
 

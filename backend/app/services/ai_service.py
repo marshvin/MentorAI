@@ -27,7 +27,7 @@ class ModelResponseError(AIServiceError):
 class AIService:
     """Service for handling AI interactions with Google Gemini."""
     
-    # List of educational topics
+    # List of educational topics for detecting non-educational queries
     EDUCATIONAL_TOPICS = [
         'math', 'mathematics', 'algebra', 'geometry', 'calculus', 'statistics', 'trigonometry',
         'science', 'biology', 'chemistry', 'physics', 'astronomy', 'geology', 'ecology',
@@ -50,124 +50,6 @@ class AIService:
         'engineering', 'architecture', 'design', 'technology', 'innovation',
         'proof', 'evidence', 'experiment', 'observation', 'hypothesis'
     ]
-    
-    # Non-educational response message
-    NON_EDUCATIONAL_MESSAGE = "I'm sorry, but I'm designed to help with educational questions. I can assist with topics like math, science, history, literature, languages, programming, and other academic subjects. Could you please ask me something related to education or academics?"
-    
-    # Greeting patterns
-    GREETING_PATTERNS = [
-        r'^hi\b',
-        r'^hello\b',
-        r'^hey\b',
-        r'^greetings\b',
-        r'^good\s+(morning|afternoon|evening)\b',
-        r'^howdy\b',
-        r'^hola\b',
-        r'^bonjour\b'
-    ]
-    
-    @classmethod
-    def is_greeting(cls, query: str) -> bool:
-        """Check if the query is a greeting."""
-        query_lower = query.lower()
-        return any(re.search(pattern, query_lower) for pattern in cls.GREETING_PATTERNS)
-    
-    @classmethod
-    def is_educational_query(cls, query: str) -> bool:
-        """
-        Check if a query is educational in nature.
-        
-        Args:
-            query: The query to check
-            
-        Returns:
-            True if the query is educational, False otherwise
-        """
-        query_lower = query.lower()
-        
-        # Always allow greetings in new conversations
-        if cls.is_greeting(query):
-            return True
-        
-        # Check if any educational topic is in the query
-        for topic in cls.EDUCATIONAL_TOPICS:
-            if topic in query_lower:
-                return True
-        
-        # Check for follow-up patterns that might not contain educational keywords
-        follow_up_patterns = [
-            r'tell\s+me\s+more',
-            r'explain\s+more',
-            r'elaborate',
-            r'go\s+on',
-            r'continue',
-            r'what\s+else',
-            r'can\s+you\s+explain\s+that',
-            r'please\s+continue',
-            r'more\s+details',
-            r'explain\s+further',
-            r'elaborate\s+on\s+that',
-            r'why\s+is\s+that',
-            r'how\s+does\s+that\s+work',
-            r'give\s+me\s+an\s+example',
-            r'examples\s+please',
-            r'more\s+info'
-        ]
-        
-        for pattern in follow_up_patterns:
-            if re.search(pattern, query_lower):
-                return True
-                
-        # Check for educational patterns
-        educational_patterns = [
-            r'what\s+is',
-            r'how\s+to',
-            r'why\s+do',
-            r'explain\s+',
-            r'define\s+',
-            r'describe\s+',
-            r'meaning\s+of',
-            r'difference\s+between',
-            r'tell\s+me\s+about',
-            r'who\s+was',
-            r'when\s+did',
-            r'where\s+is',
-            r'calculate',
-            r'solve',
-            r'\bguide\b',
-            r'\bdefinition\b',
-            r'\bconcept\b',
-            r'\bprocess\b',
-            r'\bmethod\b',
-            r'\bexample\b',
-            r'\btheory\b',
-            r'\bsteps\b',
-            r'\bcauses\b',
-            r'\beffects\b',
-            r'\bopinion\b',
-            r'\bevaluation\b',
-            r'\breview\b',
-            r'\banalysis\b',
-            r'\bformula\b',
-            r'\bequation\b',
-            r'\bproblem\b',
-            r'\bsolution\b',
-            r'\bcourse\b',
-            r'\blearn\b',
-            r'\bstudy\b',
-            r'\bunderstand\b',
-            r'\bresearch\b',
-            r'\bexplanation\b',
-            r'\btutorial\b',
-            r'\bhelp\b'
-        ]
-        
-        for pattern in educational_patterns:
-            if re.search(pattern, query_lower):
-                return True
-                
-        # If we've reached this point, the query might not be educational
-        return False
     
     @staticmethod
     async def get_answer(question: str, conversation_id: Optional[str] = None, max_retries: int = 2) -> Tuple[str, str]:
@@ -209,20 +91,6 @@ class AIService:
             # Create a new conversation
             conversation = ConversationService.create_conversation()
             conversation_id = conversation.id
-            
-        # Check if the question is educational in nature (only for new conversations or non-follow-ups)
-        if len(ConversationService.get_messages(conversation_id)) == 0:
-            # For new conversations, allow greetings
-            if AIService.is_greeting(sanitized_question):
-                greeting_response = "Hello! I'm MentorAI, your educational assistant. I can help you with subjects like math, science, history, literature, and more. What would you like to learn about?"
-                ConversationService.add_message(conversation_id, "user", sanitized_question)
-                ConversationService.add_message(conversation_id, "model", greeting_response)
-                return greeting_response, conversation_id
-            elif not AIService.is_educational_query(sanitized_question):
-                # Add the non-educational question and response to the conversation history
-                ConversationService.add_message(conversation_id, "user", sanitized_question)
-                ConversationService.add_message(conversation_id, "model", AIService.NON_EDUCATIONAL_MESSAGE)
-                return AIService.NON_EDUCATIONAL_MESSAGE, conversation_id
         
         # Add user message to history
         ConversationService.add_message(conversation_id, "user", sanitized_question)
@@ -238,12 +106,11 @@ class AIService:
                 # Get formatted conversation history
                 history = ConversationService.format_history_for_gemini(conversation_id)
                 
-                # Create chat session with history
+                # Create chat session
                 chat = model.start_chat(history=[])
                 
-                # Add system instructions if this is a new conversation
-                if len(ConversationService.get_messages(conversation_id)) <= 1:
-                    chat.send_message(SYSTEM_PROMPT)
+                # Always send system prompt first for consistent behavior
+                chat.send_message(SYSTEM_PROMPT)
                 
                 # Send all messages in history
                 for message in history:
