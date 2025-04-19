@@ -9,6 +9,7 @@ export interface Conversation {
   title: string;
   messages: Message[];
   createdAt: Date;
+  backend_conversation_id?: string; // ID from the backend API
 }
 
 // Generate a unique ID

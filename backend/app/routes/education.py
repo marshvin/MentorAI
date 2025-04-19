@@ -31,7 +31,8 @@ router = APIRouter(
             "content": {
                 "application/json": {
                     "example": {
-                        "answer": "Photosynthesis is the process by which green plants and some other organisms convert light energy into chemical energy. During photosynthesis, plants capture light energy and use it to convert water, carbon dioxide, and minerals into oxygen and energy-rich organic compounds."
+                        "answer": "Photosynthesis is the process by which green plants and some other organisms convert light energy into chemical energy. During photosynthesis, plants capture light energy and use it to convert water, carbon dioxide, and minerals into oxygen and energy-rich organic compounds.",
+                        "conversation_id": "12345678-1234-5678-1234-567812345678"
                     }
                 }
             }
@@ -70,11 +71,15 @@ async def ask_question(request: QuestionRequest):
     literature, languages, programming, and other academic subjects.
     For non-educational topics, it provides a polite response asking for an academic question.
     
+    This endpoint supports conversational context with the 'conversation_id' parameter.
+    If a conversation_id is provided, the question is interpreted in the context of the previous conversation.
+    If no conversation_id is provided, a new conversation is started.
+    
     Args:
-        request: The question request object containing the question
+        request: The question request object containing the question and optional conversation_id
         
     Returns:
-        AnswerResponse: The AI's response to the question
+        AnswerResponse: The AI's response to the question and the conversation ID for future messages
         
     Raises:
         HTTPException: If there is an error processing the request
@@ -84,10 +89,13 @@ async def ask_question(request: QuestionRequest):
         print(f"Processing question: {request.question}")
         
         # Get answer from AI service
-        answer = await AIService.get_answer(request.question)
+        answer, conversation_id = await AIService.get_answer(
+            question=request.question, 
+            conversation_id=request.conversation_id
+        )
         
-        # Return the response
-        return AnswerResponse(answer=answer)
+        # Return the response with conversation ID
+        return AnswerResponse(answer=answer, conversation_id=conversation_id)
     
     except ValueError as e:
         # Input validation errors (already handled by Pydantic but as a fallback)

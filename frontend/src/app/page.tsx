@@ -76,7 +76,10 @@ export default function Home() {
 
     try {
       // Call backend API using our API module
-      const response = await educationApi.askQuestion(text);
+      const response = await educationApi.askQuestion(
+        text, 
+        updatedConversation.backend_conversation_id
+      );
 
       // Add AI response
       const newAIMessage: Message = {
@@ -84,10 +87,11 @@ export default function Home() {
         text: response.answer
       };
       
-      // Update with AI message
+      // Update with AI message and backend conversation ID
       const finalConversation = { 
         ...updatedConversation,
-        messages: [...updatedConversation.messages, newAIMessage]
+        messages: [...updatedConversation.messages, newAIMessage],
+        backend_conversation_id: response.conversation_id
       };
       
       setActiveConversation(finalConversation);

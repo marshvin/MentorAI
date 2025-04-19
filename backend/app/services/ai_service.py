@@ -6,7 +6,8 @@ import google.generativeai as genai
 import time
 import re
 from app.config.settings import GOOGLE_API_KEY, AI_MODEL, SYSTEM_PROMPT
-from typing import Dict, Any, Optional, Tuple, Union
+from app.services.conversation_service import ConversationService
+from typing import Dict, Any, Optional, Tuple, Union, List
 
 # Configure Gemini
 genai.configure(api_key=GOOGLE_API_KEY)
@@ -53,6 +54,24 @@ class AIService:
     # Non-educational response message
     NON_EDUCATIONAL_MESSAGE = "I'm sorry, but I'm designed to help with educational questions. I can assist with topics like math, science, history, literature, languages, programming, and other academic subjects. Could you please ask me something related to education or academics?"
     
+    # Greeting patterns
+    GREETING_PATTERNS = [
+        r'^hi\b',
+        r'^hello\b',
+        r'^hey\b',
+        r'^greetings\b',
+        r'^good\s+(morning|afternoon|evening)\b',
+        r'^howdy\b',
+        r'^hola\b',
+        r'^bonjour\b'
+    ]
+    
+    @classmethod
+    def is_greeting(cls, query: str) -> bool:
+        """Check if the query is a greeting."""
+        query_lower = query.lower()
+        return any(re.search(pattern, query_lower) for pattern in cls.GREETING_PATTERNS)
+    
     @classmethod
     def is_educational_query(cls, query: str) -> bool:
         """
@@ -66,9 +85,37 @@ class AIService:
         """
         query_lower = query.lower()
         
+        # Always allow greetings in new conversations
+        if cls.is_greeting(query):
+            return True
+        
         # Check if any educational topic is in the query
         for topic in cls.EDUCATIONAL_TOPICS:
             if topic in query_lower:
+                return True
+        
+        # Check for follow-up patterns that might not contain educational keywords
+        follow_up_patterns = [
+            r'tell\s+me\s+more',
+            r'explain\s+more',
+            r'elaborate',
+            r'go\s+on',
+            r'continue',
+            r'what\s+else',
+            r'can\s+you\s+explain\s+that',
+            r'please\s+continue',
+            r'more\s+details',
+            r'explain\s+further',
+            r'elaborate\s+on\s+that',
+            r'why\s+is\s+that',
+            r'how\s+does\s+that\s+work',
+            r'give\s+me\s+an\s+example',
+            r'examples\s+please',
+            r'more\s+info'
+        ]
+        
+        for pattern in follow_up_patterns:
+            if re.search(pattern, query_lower):
                 return True
                 
         # Check for educational patterns
@@ -123,16 +170,17 @@ class AIService:
         return False
     
     @staticmethod
-    async def get_answer(question: str, max_retries: int = 2) -> str:
+    async def get_answer(question: str, conversation_id: Optional[str] = None, max_retries: int = 2) -> Tuple[str, str]:
         """
         Get an answer to a question from the AI model.
         
         Args:
             question: The question to ask the AI
+            conversation_id: Optional ID of an existing conversation
             max_retries: Maximum number of retry attempts if model fails
             
         Returns:
-            The AI's response as a string
+            A tuple containing (AI's response as a string, conversation ID)
             
         Raises:
             ModelConnectionError: If there is an error connecting to the AI service
@@ -143,11 +191,41 @@ class AIService:
         sanitized_question = question.strip()
         if not sanitized_question:
             raise ValueError("Question cannot be empty")
+        
+        # Get or create conversation
+        if conversation_id:
+            try:
+                # Validate that conversation exists
+                conversation = ConversationService.get_conversation(conversation_id)
+                if not conversation:
+                    # If conversation doesn't exist, create a new one
+                    conversation = ConversationService.create_conversation()
+                    conversation_id = conversation.id
+            except ValueError:
+                # If conversation doesn't exist, create a new one
+                conversation = ConversationService.create_conversation()
+                conversation_id = conversation.id
+        else:
+            # Create a new conversation
+            conversation = ConversationService.create_conversation()
+            conversation_id = conversation.id
             
-        # Check if the question is educational in nature
-        if not AIService.is_educational_query(sanitized_question):
-            # Return polite message instead of raising an error
-            return AIService.NON_EDUCATIONAL_MESSAGE
+        # Check if the question is educational in nature (only for new conversations or non-follow-ups)
+        if len(ConversationService.get_messages(conversation_id)) == 0:
+            # For new conversations, allow greetings
+            if AIService.is_greeting(sanitized_question):
+                greeting_response = "Hello! I'm MentorAI, your educational assistant. I can help you with subjects like math, science, history, literature, and more. What would you like to learn about?"
+                ConversationService.add_message(conversation_id, "user", sanitized_question)
+                ConversationService.add_message(conversation_id, "model", greeting_response)
+                return greeting_response, conversation_id
+            elif not AIService.is_educational_query(sanitized_question):
+                # Add the non-educational question and response to the conversation history
+                ConversationService.add_message(conversation_id, "user", sanitized_question)
+                ConversationService.add_message(conversation_id, "model", AIService.NON_EDUCATIONAL_MESSAGE)
+                return AIService.NON_EDUCATIONAL_MESSAGE, conversation_id
+        
+        # Add user message to history
+        ConversationService.add_message(conversation_id, "user", sanitized_question)
             
         retry_count = 0
         last_error = None
@@ -157,24 +235,32 @@ class AIService:
                 # Initialize the Gemini model
                 model = genai.GenerativeModel(AI_MODEL)
                 
-                # Create chat session with system prompt
-                chat = model.start_chat(history=[
-                    {"role": "user", "parts": ["Hi, I need help with my studies."]},
-                    {"role": "model", "parts": ["Hello! I'm MentorAI, your AI educational assistant. I'm here to help you with your academic questions. What subject or topic are you studying?"]}
-                ])
+                # Get formatted conversation history
+                history = ConversationService.format_history_for_gemini(conversation_id)
                 
-                # Add system instructions
-                chat.send_message(SYSTEM_PROMPT)
+                # Create chat session with history
+                chat = model.start_chat(history=[])
                 
-                # Send the user's question
+                # Add system instructions if this is a new conversation
+                if len(ConversationService.get_messages(conversation_id)) <= 1:
+                    chat.send_message(SYSTEM_PROMPT)
+                
+                # Send all messages in history
+                for message in history:
+                    chat.send_message(message["parts"][0])
+                
+                # Send the user's question and get response
                 response = chat.send_message(sanitized_question)
                 
                 # Validate response
                 if not response or not response.text or len(response.text.strip()) == 0:
                     raise ModelResponseError("Received empty response from AI model")
                 
-                # Return the AI's response
-                return response.text
+                # Add the AI's response to the conversation history
+                ConversationService.add_message(conversation_id, "model", response.text)
+                
+                # Return the AI's response and conversation ID
+                return response.text, conversation_id
                 
             except (ConnectionError, TimeoutError) as e:
                 last_error = e

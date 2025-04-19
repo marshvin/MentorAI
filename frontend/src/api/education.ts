@@ -4,10 +4,12 @@ import { AxiosError } from 'axios';
 // Define types
 export interface QuestionRequest {
   question: string;
+  conversation_id?: string;
 }
 
 export interface AnswerResponse {
   answer: string;
+  conversation_id: string;
   error?: string;
 }
 
@@ -33,10 +35,11 @@ export const educationApi = {
   /**
    * Ask a question to the AI educational assistant
    * @param question The question text
-   * @returns Promise with the AI's answer
+   * @param conversationId Optional conversation ID for context
+   * @returns Promise with the AI's answer and conversation ID
    * @throws ApiError with status code and error details
    */
-  askQuestion: async (question: string): Promise<AnswerResponse> => {
+  askQuestion: async (question: string, conversationId?: string): Promise<AnswerResponse> => {
     try {
       // Basic validation - only check if empty or too long
       if (!question || question.trim().length === 0) {
@@ -55,10 +58,18 @@ export const educationApi = {
         );
       }
       
+      // Prepare request data
+      const requestData: QuestionRequest = {
+        question
+      };
+      
+      // Add conversation_id if it exists
+      if (conversationId) {
+        requestData.conversation_id = conversationId;
+      }
+      
       // Send request to backend
-      const response = await apiClient.post<AnswerResponse>('/education/ask', {
-        question,
-      });
+      const response = await apiClient.post<AnswerResponse>('/education/ask', requestData);
       
       return response.data;
     } catch (error) {
