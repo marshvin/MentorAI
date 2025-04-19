@@ -10,13 +10,27 @@ load_dotenv()
 
 # API settings
 API_TITLE = "MentorAI API"
-API_DESCRIPTION = "Backend for the MentorAI educational assistant"
+API_DESCRIPTION = """
+Backend for the MentorAI educational assistant.
+
+This API provides access to an AI-powered educational assistant that can answer questions about:
+- Mathematics and Statistics
+- Science (Physics, Chemistry, Biology)
+- Computer Science and Programming
+- History and Geography
+- Literature and Languages
+- And other academic subjects
+
+**Note:** The API is restricted to educational topics only.
+"""
 API_VERSION = "1.0.0"
+API_DOCS_URL = "/docs"  # URL for the Swagger UI
+API_REDOC_URL = None    # Disable ReDoc if not needed
 
 # CORS settings
 CORS_ORIGINS = [
     "http://localhost:3000",  # Development URL
-    "https://mentor-ai-two.vercel.app/"  # Production URL
+    "https://mentor-ai-two.vercel.app"  # Production URL
 ]
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_METHODS = ["*"]

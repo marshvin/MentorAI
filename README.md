@@ -2,8 +2,6 @@
 
 MentorAI is an AI-powered educational assistant that answers questions related to academics, including subjects like math, science, literature, history, and more.
 
-![MentorAI Screenshot](https://mentor-ai-two.vercel.app/screenshot.png)
-
 Live Demo: [https://mentor-ai-two.vercel.app/](https://mentor-ai-two.vercel.app/)
 
 ## Project Structure
@@ -19,6 +17,7 @@ The project is divided into two main parts:
 - Conversation history
 - Markdown support for complex formatting of educational content
 - Mobile-responsive design
+- Interactive Swagger API documentation
 
 ## Technologies Used
 
@@ -160,7 +159,12 @@ The frontend is currently deployed to Vercel at [https://mentor-ai-two.vercel.ap
 
 When running locally, the API documentation is available at:
 - Swagger UI: http://localhost:8000/docs
-- ReDoc: http://localhost:8000/redoc
+
+The Swagger UI provides interactive documentation where you can:
+- Browse all available API endpoints
+- See request and response schemas with examples
+- Test API endpoints directly from the browser
+- Understand API capabilities and requirements
 
 ### Key Endpoints
 
@@ -173,10 +177,6 @@ When running locally, the API documentation is available at:
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
 
 ## Contact
 
