@@ -32,7 +32,7 @@ class AIService:
             # Create chat session with system prompt
             chat = model.start_chat(history=[
                 {"role": "user", "parts": ["Hi, I need help with my studies."]},
-                {"role": "model", "parts": ["Hello! I'm EduBuddy, your AI educational assistant. I'm here to help you with your academic questions. What subject or topic are you studying?"]}
+                {"role": "model", "parts": ["Hello! I'm MentorAI, your AI educational assistant. I'm here to help you with your academic questions. What subject or topic are you studying?"]}
             ])
             
             # Add system instructions

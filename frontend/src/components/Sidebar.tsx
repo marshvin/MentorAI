@@ -93,7 +93,7 @@ const Sidebar: React.FC<SidebarProps> = ({
       
       <div className="p-4 border-t border-gray-800">
         <div className="text-sm text-gray-400">
-          EduBuddy v1.0
+          MentorAI v1.0
         </div>
       </div>
     </div>

@@ -1,6 +1,6 @@
-# EduBuddy Frontend
+# MentorAI Frontend
 
-EduBuddy is an AI-powered educational assistant that helps answer educational questions.
+MentorAI is an AI-powered educational assistant that helps answer educational questions.
 
 ## Getting Started
 

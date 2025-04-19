@@ -21,4 +21,4 @@ async def root():
     Returns:
         dict: A redirect message
     """
-    return {"message": "Welcome to EduBuddy API. Visit /health for status."} 
+    return {"message": "Welcome to MentorAI API. Visit /health for status."} 

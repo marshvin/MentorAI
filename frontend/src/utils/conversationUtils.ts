@@ -26,12 +26,12 @@ export const getTitleFromMessage = (message: string): string => {
 
 // Save conversations to localStorage
 export const saveConversations = (conversations: Conversation[]): void => {
-  localStorage.setItem('edubuddy-conversations', JSON.stringify(conversations));
+  localStorage.setItem('mentorAI-conversations', JSON.stringify(conversations));
 };
 
 // Load conversations from localStorage
 export const loadConversations = (): Conversation[] => {
-  const saved = localStorage.getItem('edubuddy-conversations');
+  const saved = localStorage.getItem('mentorAI-conversations');
   if (!saved) return [];
   
   try {

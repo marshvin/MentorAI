@@ -1,4 +1,4 @@
-# EduBuddy
+# MentorAI
 
 An AI-powered educational assistant that helps users ask and get answers to study-related questions.
 
@@ -14,7 +14,7 @@ An AI-powered educational assistant that helps users ask and get answers to stud
 ## Project Structure
 
 ```
-EduBuddy/
+MentorAI/
 ├── frontend/           # Next.js frontend
 │   ├── src/
 │   │   ├── app/        # Next.js app directory

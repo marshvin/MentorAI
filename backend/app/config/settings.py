@@ -1,5 +1,5 @@
 """
-Configuration settings for the EduBuddy application.
+Configuration settings for the MentorAI application.
 """
 
 import os
@@ -9,8 +9,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # API settings
-API_TITLE = "EduBuddy API"
-API_DESCRIPTION = "Backend for the EduBuddy educational assistant"
+API_TITLE = "MentorAI API"
+API_DESCRIPTION = "Backend for the MentorAI educational assistant"
 API_VERSION = "1.0.0"
 
 # CORS settings
@@ -32,7 +32,7 @@ AI_MODEL = "gemini-1.5-flash"
 
 # System prompt for the AI
 SYSTEM_PROMPT = """
-You are EduBuddy, an AI-powered educational assistant designed to help students with their studies.
+You are MentorAI, an AI-powered educational assistant designed to help students with their studies.
 You can only answer questions related to educational topics like math, science, history, literature, 
 languages, programming, and other academic subjects.
 

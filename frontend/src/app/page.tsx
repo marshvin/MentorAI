@@ -21,7 +21,7 @@ export default function Home() {
   const [activeConversation, setActiveConversation] = useState<Conversation | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [conversationToDelete, setConversationToDelete] = useState<string | null>(null);
 
@@ -183,7 +183,7 @@ export default function Home() {
       {/* Chat area */}
       <div className="flex-1 flex flex-col h-screen overflow-hidden">
         <header className="bg-white border-b p-4 flex items-center">
-          <h1 className="text-xl font-bold text-primary">EduBuddy</h1>
+          <h1 className="text-xl font-bold text-primary">MentorAI</h1>
           <p className="text-gray-600 ml-4">Your AI-powered educational assistant</p>
         </header>
         
@@ -192,7 +192,7 @@ export default function Home() {
             <div className="bg-white rounded-xl shadow-md p-4 mb-4">
               {activeConversation && activeConversation.messages.length === 0 ? (
                 <div className="text-center py-10">
-                  <h2 className="text-xl font-semibold text-gray-700 mb-2">Welcome to EduBuddy!</h2>
+                  <h2 className="text-xl font-semibold text-gray-700 mb-2">Welcome to MentorAI!</h2>
                   <p className="text-gray-500 mb-4">
                     Ask me any educational question to get started. I'm here to help with subjects like
                     math, science, history, literature, and more.

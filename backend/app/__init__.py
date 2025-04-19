@@ -1,3 +1,3 @@
 """
-EduBuddy application package.
+MentorAI application package.
 """ 

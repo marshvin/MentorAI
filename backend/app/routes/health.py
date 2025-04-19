@@ -15,4 +15,4 @@ async def health_check():
     Returns:
         dict: A status message
     """
-    return {"status": "online", "message": "EduBuddy API is running"} 
+    return {"status": "online", "message": "MentorAI API is running"} 

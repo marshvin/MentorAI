@@ -36,7 +36,7 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, isLoading }) => {
         </button>
       </div>
       <p className="text-xs text-gray-500 mt-2">
-        EduBuddy only answers education-related questions. Ask about math, science, literature, history, etc.
+        MentorAI only answers education-related questions. Ask about math, science, literature, history, etc.
       </p>
     </form>
   );

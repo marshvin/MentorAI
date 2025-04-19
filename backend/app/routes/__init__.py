@@ -1,3 +1,3 @@
 """
-API route definitions for the EduBuddy application.
+API route definitions for the MentorAI application.
 """ 

@@ -1,3 +1,3 @@
 """
-Models for the EduBuddy application.
+Models for the MentorAI application.
 """ 

@@ -5,7 +5,7 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "EduBuddy - AI Educational Assistant",
+  title: "MentorAI - AI Educational Assistant",
   description: "An AI-powered educational assistant to help with your studies",
 };
 

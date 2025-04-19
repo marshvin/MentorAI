@@ -1,3 +1,3 @@
 """
-Service layer components for the EduBuddy application.
+Service layer components for the MentorAI application.
 """ 

@@ -1,3 +1,3 @@
 """
-Configuration components for the EduBuddy application.
+Configuration components for the MentorAI application.
 """ 
