@@ -3,6 +3,7 @@
 MentorAI is an AI-powered educational assistant that answers questions related to academics, including subjects like math, science, literature, history, and more.
 
 Live Demo: [https://mentor-ai-two.vercel.app/](https://mentor-ai-two.vercel.app/)
+> ⚠️ **Note:** The server may take a few moments to respond on the first request due to a cold start (free trial hosting).
 
 ## Project Structure
 
